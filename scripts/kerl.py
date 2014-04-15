@@ -28,11 +28,11 @@ versions = [
             #"R15B03",
             #"R16B",
             #"R16B01",
-            #"R16B02",
+            "R16B02",
             #"R16B03",
             #"17.0"
 
-            "R15B"
+            #"R15B"
            ]
 
 def kerl_build_release(version):
@@ -47,7 +47,7 @@ def kerl_build_release(version):
 
 def kerl_install_release(version):
     build = version.lower()
-    path = "/Users/erszcz/apps/erlang/%s" % (build)
+    path = get_build_path(build)
     cmd = "kerl install %s %s" % (build, path)
     print cmd
     r = os.system(cmd)
@@ -60,12 +60,11 @@ def generate_plt(plt_dir, version):
     """Run Dialyzer to generate a PLT in `plt_dir` for Erlang `version`."""
     plt_name = "erlang-%s.plt" % version.lower()
     build = version.lower()
-    erlang_path = "/Users/erszcz/apps/erlang/%s" % (build)
+    erlang_path = get_build_path(build)
     app_names = get_app_names(os.path.join(erlang_path, "lib"))
     plt_path = os.path.join(plt_dir, plt_name)
     log_path = "dialyzer-%s.log" % build
     cmd = """
-kerl_deactivate;
 . %(erlang)s/activate;
 dialyzer --build_plt \\
          --output_plt %(plt)s \\
@@ -88,6 +87,10 @@ def get_app_names(lib):
     app_names = sorted(list(set(app_names) - set(["erl_interface",
                                                   "jinterface"])))
     return app_names
+
+def get_build_path(build):
+    home = os.getenv("HOME")
+    return os.path.join(home, "apps", "erlang", build)
 
 def main(args):
     options = {"plt_dir": "plts"}
