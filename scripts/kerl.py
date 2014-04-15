@@ -41,7 +41,7 @@ def kerl_build_release(version):
     print cmd
     r = os.system(cmd)
     if r != 0:
-        sys.stderr.write("kerl build %s failed" % build)
+        sys.stderr.write("kerl build %s failed\n" % build)
     else:
         print "done"
 
